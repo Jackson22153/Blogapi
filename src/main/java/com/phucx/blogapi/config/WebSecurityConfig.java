@@ -57,6 +57,7 @@ public class WebSecurityConfig {
             .requestMatchers("/posts/**", "/register/**").permitAll()
             .requestMatchers("/blogOwner/**").hasAnyRole("USER", "ADMIN")
             .requestMatchers("/admin/**").hasRole("ADMIN")
+            .requestMatchers("/swagger-ui/**").permitAll()
             .anyRequest().authenticated());
         return http.build();
     }

@@ -25,6 +25,8 @@ import com.phucx.blogapi.service.category.CategoryService;
 import com.phucx.blogapi.service.post.PostService;
 import com.phucx.blogapi.service.uploadFile.UploadFileService;
 
+import io.swagger.v3.oas.annotations.Operation;
+
 @RestController
 @RequestMapping("/posts")
 public class PostController {
@@ -35,6 +37,7 @@ public class PostController {
     @Autowired
     private UploadFileService uploadFileService;
     
+    @Operation(summary = "Get posts for all users")
     @GetMapping
     public ResponseEntity<List<PostInfo>> getPosts(
         @RequestParam(name = "page", required = false) Integer pagenumber
@@ -45,6 +48,7 @@ public class PostController {
         return ResponseEntity.ok().body(posts);
     }
 
+    @Operation(summary = "Search posts for all users")
     @GetMapping("/search")
     public ResponseEntity<List<PostInfo>> searchPosts(
         @RequestParam(name = "l") String letter,
@@ -56,6 +60,7 @@ public class PostController {
         return ResponseEntity.ok().body(posts);
     }
 
+    @Operation(summary = "Get posts based on category for all users")
     @GetMapping("/search/{categoryName}")
     public ResponseEntity<List<PostInfo>> searchPostsByCategory(
         @RequestParam(name = "l") String letter,
@@ -69,6 +74,7 @@ public class PostController {
         return ResponseEntity.ok().body(posts);
     }
 
+    @Operation(summary = "Get posts based on category for all users")
     @GetMapping("/category/{categoryName}")
     public ResponseEntity<List<PostInfo>> getPostsByCategory(
         @PathVariable(name = "categoryName") String category,
@@ -80,18 +86,21 @@ public class PostController {
         return ResponseEntity.ok().body(posts);
     }
 
+    @Operation(summary = "Get post detail for all users")
     @GetMapping("/detail/{postID}")
     public ResponseEntity<PostInfo> getPostDetail(@PathVariable Integer postID) throws NameNotFoundException{
         PostInfo post = postService.getPostByStatus(postID, PostStatus.Successful);
         return ResponseEntity.ok().body(post);
     }
 
+    @Operation(summary = "Get categories for all users")
     @GetMapping("/categories")
     public ResponseEntity<List<Category>> getCategories(){
         List<Category> categories = categoryService.getAllCategories();
         return ResponseEntity.ok().body(categories);
     }
 
+    @Operation(summary = "Get specific image for all users")
     @GetMapping("/image/{imageFilename}")
     public ResponseEntity<byte[]> getImage(@PathVariable String imageFilename) throws IOException{
         byte[] imageBytes = uploadFileService.getImage(imageFilename);
@@ -99,7 +108,8 @@ public class PostController {
         return ResponseEntity.ok().contentType(MediaType.parseMediaType(mimeType)).body(imageBytes);
     }
 
-    @PostMapping("/upload")
+    @Operation(summary = "Upload an image for all users")
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadImage(@RequestBody MultipartFile file){
         return ResponseEntity.ok().body(uploadFileService.uploadImage(file));
     }

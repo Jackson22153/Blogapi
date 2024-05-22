@@ -13,21 +13,30 @@ import com.phucx.blogapi.model.UserDetail;
 import com.phucx.blogapi.model.UserRoleInfoDTO;
 import com.phucx.blogapi.service.user.UserService;
 
+import io.swagger.v3.oas.annotations.Operation;
+
 @RestController
 public class AuthenticatoinController {
     @Autowired
     private UserService userService;
 
+    @Operation(
+        summary = "Register a user",
+        description = "Create a new user")
     @PostMapping("/register")
     public ResponseEntity<ResponseFormat> register(@RequestBody UserDetail userDetail){
         Boolean status = userService.registerUser(userDetail);
         return ResponseEntity.ok().body(new ResponseFormat(status));
     }
 
+    @Operation(
+        summary = "Log in to the server",
+        description = "Use Basic Authorization which set username and password on the request header for server to authenticate")
     @GetMapping("/login")
     public ResponseEntity<UserRoleInfoDTO> login(Authentication authentication){
         String username = authentication.getName();
         UserRoleInfoDTO user = userService.getUserRoles(username);
         return ResponseEntity.ok().body(user);
     }
+
 }

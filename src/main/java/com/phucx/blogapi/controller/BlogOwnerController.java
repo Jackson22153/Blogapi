@@ -3,6 +3,7 @@ package com.phucx.blogapi.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,6 +25,7 @@ import com.phucx.blogapi.model.ResponseFormat;
 import com.phucx.blogapi.service.post.PostService;
 import com.phucx.blogapi.service.uploadFile.UploadFileService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -36,6 +38,7 @@ public class BlogOwnerController {
     private UploadFileService uploadFileService;
     
     // bookmarks
+    @Operation(summary = "Get posts in bookmarks of a user")
     @GetMapping("/bookmarks/posts")
     public ResponseEntity<List<BookmarkPostInfo>> getBookmarksPosts(
         @RequestParam(name = "page", required = false) Integer pageNumber, Authentication authentication){
@@ -46,11 +49,14 @@ public class BlogOwnerController {
  
         return ResponseEntity.ok().body(posts);
     }
+    @Operation(summary = "Add a post to bookmarks")
     @PostMapping("/bookmarks/posts")
     public ResponseEntity<ResponseFormat> addPostToBookmarks(@RequestBody Bookmark bookmark, Authentication authentication){
         Boolean status = postService.addPostToBookmarks(bookmark.getPostID(), authentication.getName());
         return ResponseEntity.ok().body(new ResponseFormat(status));
     }
+
+    @Operation(summary = "Remove a post in bookmarks")
     @DeleteMapping("/bookmarks/posts")
     public ResponseEntity<ResponseFormat> removePostFromBookmarks(@RequestParam(name = "postID") Integer postID, Authentication authentication){
         Boolean status = postService.removePostFromBookmarks(postID, authentication.getName());
@@ -59,7 +65,7 @@ public class BlogOwnerController {
 
 
 
-
+    @Operation(summary = "Get all posts of a user")
     @GetMapping("/posts")
     public ResponseEntity<List<PostInfo>> getPosts(
         @RequestParam(name = "page", required = false) Integer pageNumber, Authentication authentication){
@@ -70,7 +76,7 @@ public class BlogOwnerController {
  
         return ResponseEntity.ok().body(posts);
     }
-
+    @Operation(summary = "Get a specific user's post detail")
     @GetMapping("/posts/{postID}")
     public ResponseEntity<PostInfo> getPostDetail(
         @PathVariable Integer postID,
@@ -81,6 +87,7 @@ public class BlogOwnerController {
         return ResponseEntity.ok().body(post);
     }
 
+    @Operation(summary = "Search a specific user's posts")
     @GetMapping("/posts/search")
     public ResponseEntity<List<PostInfo>> searchPosts(
         @RequestParam(name = "l") String letter,
@@ -94,6 +101,7 @@ public class BlogOwnerController {
         return ResponseEntity.ok().body(posts);
     }
 
+    @Operation(summary = "Get posts based on category of a user")
     @GetMapping("/posts/category/{category}")
     public ResponseEntity<List<PostInfo>> getPostsByCategory(
         @PathVariable String category,
@@ -107,19 +115,24 @@ public class BlogOwnerController {
         return ResponseEntity.ok().body(posts);
     }
 
+    @Operation(
+        summary = "Adding a new post of a user",
+        description = "Adding a post for that user")
     @PutMapping("/posts")
     public ResponseEntity<ResponseFormat> createPost(@RequestBody PostInfo postInfo, Authentication authentication){
         Boolean status = postService.addPost(postInfo, authentication.getName());
         return ResponseEntity.ok().body(new ResponseFormat(status));
     }
 
+    @Operation(summary = "Update a specific user's posts")
     @PostMapping("/posts")
     public ResponseEntity<ResponseFormat> updatePost(@RequestBody PostInfo postInfo, Authentication authentication){
         Boolean status = postService.updatePostOfUser(postInfo, authentication.getName());
         return ResponseEntity.ok().body(new ResponseFormat(status));
     }
 
-    @PostMapping("/upload")
+    @Operation(summary = "Upload an image")
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadImage(@RequestBody MultipartFile file){
         return ResponseEntity.ok().body(uploadFileService.uploadImage(file));
     }
