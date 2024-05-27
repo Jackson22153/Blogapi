@@ -18,12 +18,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.phucx.blogapi.constant.WebConstant;
-import com.phucx.blogapi.model.Bookmark;
 import com.phucx.blogapi.model.BookmarkPostInfo;
+import com.phucx.blogapi.model.FileFormat;
 import com.phucx.blogapi.model.PostInfo;
 import com.phucx.blogapi.model.ResponseFormat;
+import com.phucx.blogapi.model.UserRoleInfoDTO;
 import com.phucx.blogapi.service.post.PostService;
 import com.phucx.blogapi.service.uploadFile.UploadFileService;
+import com.phucx.blogapi.service.user.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
@@ -35,9 +37,31 @@ public class BlogOwnerController {
     @Autowired
     private PostService postService;
     @Autowired
+    private UserService userService;
+    @Autowired
     private UploadFileService uploadFileService;
     
+    // user
+    @Operation(summary = "Get user's information")
+    @GetMapping("/user")
+    public ResponseEntity<UserRoleInfoDTO> getUser(Authentication authentication){
+        String username = authentication.getName();
+        UserRoleInfoDTO userRoleInfo = userService.getUserRoles(username);
+        return ResponseEntity.ok().body(userRoleInfo);
+    }
+
+
     // bookmarks
+    @Operation(summary = "Check whether user's post is in bookmarks or not")
+    @GetMapping("/bookmarks/isInBookmark")
+    public ResponseEntity<ResponseFormat> checkPostInBookmarks(
+        @RequestParam("postID") Integer postID, Authentication authentication){
+        String username = authentication.getName();
+        Boolean isInBookmark = postService.isInBookmarks(postID, username);
+        return ResponseEntity.ok().body(new ResponseFormat(isInBookmark));
+    }
+
+
     @Operation(summary = "Get posts in bookmarks of a user")
     @GetMapping("/bookmarks/posts")
     public ResponseEntity<List<BookmarkPostInfo>> getBookmarksPosts(
@@ -51,8 +75,8 @@ public class BlogOwnerController {
     }
     @Operation(summary = "Add a post to bookmarks")
     @PostMapping("/bookmarks/posts")
-    public ResponseEntity<ResponseFormat> addPostToBookmarks(@RequestBody Bookmark bookmark, Authentication authentication){
-        Boolean status = postService.addPostToBookmarks(bookmark.getPostID(), authentication.getName());
+    public ResponseEntity<ResponseFormat> addPostToBookmarks(@RequestBody PostInfo postInfo, Authentication authentication){
+        Boolean status = postService.addPostToBookmarks(postInfo.getId(), authentication.getName());
         return ResponseEntity.ok().body(new ResponseFormat(status));
     }
 
@@ -64,7 +88,7 @@ public class BlogOwnerController {
     }
 
 
-
+    // post
     @Operation(summary = "Get all posts of a user")
     @GetMapping("/posts")
     public ResponseEntity<List<PostInfo>> getPosts(
@@ -133,7 +157,7 @@ public class BlogOwnerController {
 
     @Operation(summary = "Upload an image")
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> uploadImage(@RequestBody MultipartFile file){
+    public ResponseEntity<FileFormat> uploadImage(@RequestBody MultipartFile file){
         return ResponseEntity.ok().body(uploadFileService.uploadImage(file));
     }
 

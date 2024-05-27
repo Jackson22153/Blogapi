@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.phucx.blogapi.config.StoredFileProperties;
+import com.phucx.blogapi.model.FileFormat;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,7 +25,7 @@ public class UploadFileServiceImp implements UploadFileService{
     @Autowired
     private StoredFileProperties storedFileProperties;
     @Override
-    public String uploadImage(MultipartFile file) {
+    public FileFormat uploadImage(MultipartFile file) {
         log.info("uploadImage({})", file.getOriginalFilename());
         try {
             // get stored direction
@@ -40,11 +41,12 @@ public class UploadFileServiceImp implements UploadFileService{
             Path targetPath = Path.of(storedFileProperties.getImageStoredDir(), newfileName);
             Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
             String currentUrl = ServletUriComponentsBuilder.fromCurrentContextPath().toUriString();
-            return currentUrl + "/posts/image/" +newfileName;
+            log.info("{}/posts/image/{}", currentUrl, newfileName);
+            return new FileFormat(currentUrl + "/posts/image/" +newfileName);
             // return filePath;
         } catch (IOException e) {
-            e.printStackTrace();
-            return "Error uploading file: " + e.getMessage();
+            log.error("Error uploading file: " + e.getMessage());
+            return new FileFormat("Error uploading file: " + e.getMessage());
         }
     }
 

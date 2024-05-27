@@ -2,6 +2,7 @@ package com.phucx.blogapi.service.post;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import javax.naming.NameNotFoundException;
 
@@ -249,5 +250,11 @@ public class PostServiceImp implements PostService {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Page<BookmarkPostInfo> posts = bookmarkPostInfoRepository.findByUser(username, pageable);
         return posts.getContent();
+    }
+
+    @Override
+    public Boolean isInBookmarks(Integer postID, String username) {
+        Optional<BookmarkPostInfo> post = bookmarkPostInfoRepository.findByIdAndUser(postID, username);
+        return post.isPresent();
     }
 }

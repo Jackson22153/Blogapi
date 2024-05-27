@@ -40,4 +40,5 @@ public interface PostService {
     public Boolean addPostToBookmarks(Integer postID, String username);
     public Boolean removePostFromBookmarks(Integer postID, String username);
     public List<BookmarkPostInfo> getPostsInBookmarks(String username, int pageNumber, int pageSize);
+    public Boolean isInBookmarks(Integer postID, String username);
 }

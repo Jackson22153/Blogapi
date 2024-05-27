@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.phucx.blogapi.constant.PostStatus;
 import com.phucx.blogapi.constant.WebConstant;
 import com.phucx.blogapi.model.Category;
+import com.phucx.blogapi.model.FileFormat;
 import com.phucx.blogapi.model.PostInfo;
 import com.phucx.blogapi.service.category.CategoryService;
 import com.phucx.blogapi.service.post.PostService;
@@ -110,7 +111,7 @@ public class PostController {
 
     @Operation(summary = "Upload an image for all users")
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> uploadImage(@RequestBody MultipartFile file){
+    public ResponseEntity<FileFormat> uploadImage(@RequestBody MultipartFile file){
         return ResponseEntity.ok().body(uploadFileService.uploadImage(file));
     }
 }
