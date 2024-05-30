@@ -136,7 +136,7 @@ public class PostServiceImp implements PostService {
             PostInfo fetchedPost = postInfoRepository.findById(post.getId())
                 .orElseThrow(()-> new NameNotFoundException("Post " + post.getId() + " does not found"));
             postInfoRepository.updatePost(fetchedPost.getId(), post.getTitle(), post.getContent(), 
-                post.getImg(), post.getCategory());
+                post.getImg(), post.getCategory(), PostStatus.Pending.name());
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -152,12 +152,12 @@ public class PostServiceImp implements PostService {
 
     @Override
     public Boolean updatePostOfUser(PostInfo post, String username) {
-        log.info("updatePost(post={}, username={})", post, username);
+        log.info("updatePostOfUser(post={}, username={})", post, username);
         try {
             PostInfo fetchedPost = postInfoRepository.findByUserAndId(username, post.getId())
                 .orElseThrow(()-> new NameNotFoundException("Post " + post.getId() + " of user "+username+" does not found"));
             postInfoRepository.updatePost(fetchedPost.getId(), post.getTitle(), post.getContent(), 
-                post.getImg(), post.getCategory());
+                post.getImg(), post.getCategory(), PostStatus.Pending.name());
             return true;
         } catch (Exception e) {
             e.printStackTrace();

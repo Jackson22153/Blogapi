@@ -29,7 +29,7 @@ public interface PostInfoRepository extends JpaRepository<PostInfo, Integer>{
     @Modifying
     @Transactional
     @Procedure("updatePost")
-    void updatePost(Integer id, String title, String content, String img, String category);
+    void updatePost(Integer id, String title, String content, String img, String category, String status);
 
 
     @Query("""

@@ -45,7 +45,8 @@ import lombok.ToString;
             @StoredProcedureParameter(name="title", mode = ParameterMode.IN, type = String.class),
             @StoredProcedureParameter(name="content", mode = ParameterMode.IN, type = String.class),
             @StoredProcedureParameter(name="img", mode = ParameterMode.IN, type = String.class),
-            @StoredProcedureParameter(name="category", mode = ParameterMode.IN, type = String.class)
+            @StoredProcedureParameter(name="category", mode = ParameterMode.IN, type = String.class),
+            @StoredProcedureParameter(name="status", mode = ParameterMode.IN, type = String.class),
         }),
 })
 public class PostInfo {
