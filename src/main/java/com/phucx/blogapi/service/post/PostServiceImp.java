@@ -225,7 +225,10 @@ public class PostServiceImp implements PostService {
     public Boolean addPostToBookmarks(Integer postID, String username) {
         log.info("addPostToBookmarks(postID={}, username={})", postID, username);
         try {
-            bookmarkRepository.addPostToBookMarks(postID, username);
+            Optional<BookmarkPostInfo> postInfoOp = bookmarkPostInfoRepository.findByIdAndUser(postID, username);
+            if(postInfoOp.isEmpty()){
+                bookmarkRepository.addPostToBookMarks(postID, username);
+            }
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -237,7 +240,10 @@ public class PostServiceImp implements PostService {
     public Boolean removePostFromBookmarks(Integer postID, String username) {
         log.info("removePostFromBookmarks(postID={}, username={})", postID, username);
         try {
-            bookmarkRepository.removePostFromBookmarks(postID, username);
+            Optional<BookmarkPostInfo> postInfoOp = bookmarkPostInfoRepository.findByIdAndUser(postID, username);
+            if(postInfoOp.isPresent()){
+                bookmarkRepository.removePostFromBookmarks(postID, username);
+            }
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -256,5 +262,33 @@ public class PostServiceImp implements PostService {
     public Boolean isInBookmarks(Integer postID, String username) {
         Optional<BookmarkPostInfo> post = bookmarkPostInfoRepository.findByIdAndUser(postID, username);
         return post.isPresent();
+    }
+
+    @Override
+    public Boolean deletePost(Integer postID, String username) throws NameNotFoundException {
+        log.info("deletePost(postID={}, username={})", postID, username);
+        PostInfo fetchedPostInfo = postInfoRepository.findByIdAndUser(postID, username)
+            .orElseThrow(()-> new NameNotFoundException("Post "+postID+" of user "+username+"does not found"));
+        try {
+            postInfoRepository.deletePost(fetchedPostInfo.getId());
+            return true;
+        } catch (Exception e) {
+            log.error("Error: {}", e.getMessage());
+            return false;
+        }
+    }
+
+    @Override
+    public Boolean deletePost(Integer postID) throws NameNotFoundException {
+        log.info("deletePost(postID={})", postID);
+        PostInfo fetchedPostInfo = postInfoRepository.findById(postID)
+            .orElseThrow(()-> new NameNotFoundException("Post "+postID+" does not found"));
+        try {
+            postInfoRepository.deletePost(fetchedPostInfo.getId());
+            return true;
+        } catch (Exception e) {
+            log.error("Error: {}", e.getMessage());
+            return false;
+        }
     }
 }

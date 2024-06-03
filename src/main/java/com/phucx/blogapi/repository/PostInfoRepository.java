@@ -31,6 +31,10 @@ public interface PostInfoRepository extends JpaRepository<PostInfo, Integer>{
     @Procedure("updatePost")
     void updatePost(Integer id, String title, String content, String img, String category, String status);
 
+    @Modifying
+    @Transactional
+    @Procedure("deletePost")
+    void deletePost(Integer postID);
 
     @Query("""
         SELECT p FROM PostInfo p \

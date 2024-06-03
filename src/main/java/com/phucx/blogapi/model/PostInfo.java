@@ -48,6 +48,10 @@ import lombok.ToString;
             @StoredProcedureParameter(name="category", mode = ParameterMode.IN, type = String.class),
             @StoredProcedureParameter(name="status", mode = ParameterMode.IN, type = String.class),
         }),
+    @NamedStoredProcedureQuery(name = "PostInfo.deletePost", procedureName = "deletePost",
+        parameters = {
+            @StoredProcedureParameter(name="postID", mode = ParameterMode.IN, type = Integer.class),
+        }),
 })
 public class PostInfo {
     @Id

@@ -2,6 +2,8 @@ package com.phucx.blogapi.controller;
 
 import java.util.List;
 
+import javax.naming.NameNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -152,6 +154,14 @@ public class BlogOwnerController {
     @PostMapping("/posts")
     public ResponseEntity<ResponseFormat> updatePost(@RequestBody PostInfo postInfo, Authentication authentication){
         Boolean status = postService.updatePostOfUser(postInfo, authentication.getName());
+        return ResponseEntity.ok().body(new ResponseFormat(status));
+    }
+
+    @Operation(summary = "Delete a specific user's posts")
+    @DeleteMapping("/posts")
+    public ResponseEntity<ResponseFormat> deletePost(@RequestParam(name = "postID") Integer postID, Authentication authentication) 
+        throws NameNotFoundException{
+        Boolean status = postService.deletePost(postID, authentication.getName());
         return ResponseEntity.ok().body(new ResponseFormat(status));
     }
 

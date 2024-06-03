@@ -7,6 +7,7 @@ import javax.naming.NameNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -82,12 +83,35 @@ public class AdminController {
         return ResponseEntity.ok().body(new ResponseFormat(status));
     }
 
+    @Operation(summary = "Delete a post for admin")
+    @DeleteMapping("/posts")
+    public ResponseEntity<ResponseFormat> deletePost(@RequestParam(name = "postID") Integer postID, Authentication authentication) 
+        throws NameNotFoundException{
+        Boolean status = postService.deletePost(postID);
+        return ResponseEntity.ok().body(new ResponseFormat(status));
+    }
+
     @Operation(summary = "Update a specific category")
     @PostMapping("/categories")
     public ResponseEntity<ResponseFormat> updateCategory(@RequestBody Category category){
         Boolean status = categoryService.addCategory(category);
         return ResponseEntity.ok().body(new ResponseFormat(status));
     }
+
+    @Operation(summary = "Add new category")
+    @PutMapping("/categories")
+    public ResponseEntity<ResponseFormat> addCategory(@RequestBody Category category){
+        Boolean status = categoryService.addCategory(category);
+        return ResponseEntity.ok().body(new ResponseFormat(status));
+    }
+
+    @Operation(summary = "Delete a specific category")
+    @DeleteMapping("/categories")
+    public ResponseEntity<ResponseFormat> deleteCategory(@RequestParam(name = "categoryID") Integer categoryID){
+        Boolean status = categoryService.deleteCategory(categoryID);
+        return ResponseEntity.ok().body(new ResponseFormat(status));
+    }
+
 
     @Operation(summary = "Get all roles")
     @GetMapping("/roles")
