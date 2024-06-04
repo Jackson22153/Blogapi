@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.phucx.blogapi.exception.UserAuthenticationException;
+import com.phucx.blogapi.model.ResponseError;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,20 +17,20 @@ import lombok.extern.slf4j.Slf4j;
 public class ExceptionController extends ResponseEntityExceptionHandler{
     
     @ExceptionHandler(value = UserAuthenticationException.class)
-    protected ResponseEntity<String> handleUserAuthenticationException(Exception exception){
+    protected ResponseEntity<ResponseError> handleUserAuthenticationException(Exception exception){
         log.error("Error: {}", exception.getMessage());
-        return ResponseEntity.badRequest().body(exception.getMessage());
+        return ResponseEntity.badRequest().body(new ResponseError(exception.getMessage()));
     }
 
     @ExceptionHandler(value = RuntimeException.class)
-    protected ResponseEntity<String> handleRuntimeException(Exception exception){
+    protected ResponseEntity<ResponseError> handleRuntimeException(Exception exception){
         log.error("Error: {}", exception.getMessage());
-        return ResponseEntity.badRequest().body(exception.getMessage());
+        return ResponseEntity.badRequest().body(new ResponseError(exception.getMessage()));
     }
 
     @ExceptionHandler(value = NameNotFoundException.class)
-    protected ResponseEntity<String> handleNameNotFoundException(Exception exception){
+    protected ResponseEntity<ResponseError> handleNameNotFoundException(Exception exception){
         log.error("Error: {}", exception.getMessage());
-        return ResponseEntity.badRequest().body(exception.getMessage());
+        return ResponseEntity.badRequest().body(new ResponseError(exception.getMessage()));
     }
 }

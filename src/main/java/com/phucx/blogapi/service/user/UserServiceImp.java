@@ -3,6 +3,7 @@ package com.phucx.blogapi.service.user;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,14 +74,29 @@ public class UserServiceImp implements UserService {
     public Boolean registerUser(UserDetail userDetail) {
         log.info("register({})", userDetail.toString());
         Optional<User> fetchedUser = userRepository.findByUsername(userDetail.getUsername());
+        // check whether a user is existed or not
         if(fetchedUser.isPresent()) throw new RuntimeException("User " + userDetail.getUsername() + " is existed");
-        if(userDetail.getUsername()==null) throw new RuntimeException("Username is null");
-        if(userDetail.getPassword()==null) throw new RuntimeException("Password is null");
+        // check username
+        if(userDetail.getUsername()==null || userDetail.getUsername().length()==0) throw new RuntimeException("Username is null");
+        if(!checkUsernameIsEmail(userDetail.getUsername())) throw new RuntimeException("Username is not an email");
+        // check password
+        if(userDetail.getPassword()==null || userDetail.getPassword().length()==0) throw new RuntimeException("Password is null");
+        if(!checkPasswordRegex(userDetail.getPassword())) throw new RuntimeException("Password does not match syntax");
 
+        // create a new user 
         List<String> roles = new ArrayList<>();
         roles.add(RoleConstant.USER.name());
         userDetail.setRoles(roles);
         return assignRoles(userDetail);
+    }
+
+    private Boolean checkUsernameIsEmail(String username){
+        String regex = "^[A-Za-z0-9+_.-]+@(.+)$";
+        Boolean checkPasswordRegex = Pattern.matches(regex, username);
+        return checkPasswordRegex;
+    }
+    private Boolean checkPasswordRegex(String password){
+        return password.length()>=8;
     }
 
     private Boolean assignRoles(UserDetail userDetail){
