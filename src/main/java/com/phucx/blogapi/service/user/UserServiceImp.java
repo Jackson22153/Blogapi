@@ -18,7 +18,7 @@ import com.phucx.blogapi.model.Role;
 import com.phucx.blogapi.model.User;
 import com.phucx.blogapi.model.UserDetail;
 import com.phucx.blogapi.model.UserRoleInfo;
-import com.phucx.blogapi.model.UserRoleInfoDTO;
+import com.phucx.blogapi.model.UserRoles;
 import com.phucx.blogapi.repository.UserRepository;
 import com.phucx.blogapi.repository.UserRoleInfoRepository;
 import com.phucx.blogapi.service.role.RoleService;
@@ -40,8 +40,9 @@ public class UserServiceImp implements UserService {
     private ObjectMapper objectMapper;
     @Override
     public Boolean authenticate(String username, String password) {
-        log.info("username: {}", username);
-        User user = userRepository.findByUsername(username).orElseThrow(()-> new UserAuthenticationException("Invalid Username or Password"));
+        log.info("authenticate({})", username);
+        User user = userRepository.findByUsername(username)
+            .orElseThrow(()-> new UserAuthenticationException("Invalid Username or Password"));
         if(passwordEncoder.matches(password, user.getPassword())) return true;
         return false;
     }
@@ -62,12 +63,12 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public UserRoleInfoDTO getUserRoles(String username) {
+    public UserRoles getUserRoles(String username) {
         List<UserRoleInfo> userRoleInfos = userRoleInfoRepository.findByUsername(username);
         if(userRoleInfos==null || userRoleInfos.isEmpty()) throw new RuntimeException("User " + username + " does not found");
         UserRoleInfo userRoleInfo = userRoleInfos.get(0);
         List<String> roles = userRoleInfos.stream().map(UserRoleInfo::getRole).collect(Collectors.toList());
-        return new UserRoleInfoDTO(userRoleInfo.getId(), userRoleInfo.getUsername(), roles);
+        return new UserRoles(userRoleInfo.getId(), userRoleInfo.getUsername(), roles);
     }
 
     @Override

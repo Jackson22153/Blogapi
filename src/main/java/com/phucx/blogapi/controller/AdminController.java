@@ -5,6 +5,7 @@ import java.util.List;
 import javax.naming.NameNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -43,47 +44,47 @@ public class AdminController {
     @Autowired
     private RoleService roleService;
     
-    @Operation(summary = "Get all users's posts")
+    @Operation(summary = "Get all users's posts", tags = {"post", "admin"})
     @GetMapping("/posts")
-    public ResponseEntity<List<PostInfo>> getPosts(@RequestParam(name = "page", required = false) Integer pageNumber){
+    public ResponseEntity<Page<PostInfo>> getPosts(@RequestParam(name = "page", required = false) Integer pageNumber){
         pageNumber = pageNumber!=null?pageNumber:0;
-        List<PostInfo> posts = postService.getAllPosts(pageNumber, WebConstant.PAGE_SIZE);    
+        Page<PostInfo> posts = postService.getAllPosts(pageNumber, WebConstant.PAGE_SIZE);    
         return ResponseEntity.ok().body(posts);
     }
 
-    @Operation(summary = "Get all users's post detail")
+    @Operation(summary = "Get all users's post detail", tags = {"get", "admin"})
     @GetMapping("/posts/{postID}")
     public ResponseEntity<PostInfo> getPostDetail(@PathVariable Integer postID) throws NameNotFoundException{
         PostInfo post = postService.getPostInfo(postID);
         return ResponseEntity.ok().body(post);
     }
 
-    @Operation(summary = "Search all users's posts")
+    @Operation(summary = "Search all users's posts", tags = {"get", "admin"})
     @GetMapping("/posts/search")
-    public ResponseEntity<List<PostInfo>> searchPosts(
+    public ResponseEntity<Page<PostInfo>> searchPosts(
         @RequestParam(name = "l") String letter,
         @RequestParam(name = "page", required = false) Integer pagenumber
     ){
         pagenumber = pagenumber!=null?pagenumber:0;
-        List<PostInfo> posts = postService.searchAllPosts(letter, pagenumber, WebConstant.PAGE_SIZE);
+        Page<PostInfo> posts = postService.searchAllPosts(letter, pagenumber, WebConstant.PAGE_SIZE);
         return ResponseEntity.ok().body(posts);
     }
     
-    @Operation(summary = "Update all users's post")
+    @Operation(summary = "Update all users's post", tags = {"post", "admin"})
     @PostMapping("/posts")
     public ResponseEntity<ResponseFormat> updatePost(@RequestBody PostInfo postDetail){
         Boolean status = postService.updatePost(postDetail);
         return ResponseEntity.ok().body(new ResponseFormat(status));
     }
 
-    @Operation(summary = "Add a new post for admin")
+    @Operation(summary = "Add a new post for admin", tags = {"put", "admin"})
     @PutMapping("/posts")
     public ResponseEntity<ResponseFormat> createPost(@RequestBody PostInfo postInfo, Authentication authentication){
         Boolean status = postService.addPost(postInfo, authentication.getName());
         return ResponseEntity.ok().body(new ResponseFormat(status));
     }
 
-    @Operation(summary = "Delete a post for admin")
+    @Operation(summary = "Delete a post for admin", tags = {"delete", "admin"})
     @DeleteMapping("/posts")
     public ResponseEntity<ResponseFormat> deletePost(@RequestParam(name = "postID") Integer postID, Authentication authentication) 
         throws NameNotFoundException{
@@ -91,21 +92,21 @@ public class AdminController {
         return ResponseEntity.ok().body(new ResponseFormat(status));
     }
 
-    @Operation(summary = "Update a specific category")
+    @Operation(summary = "Update a specific category", tags = {"post", "admin"})
     @PostMapping("/categories")
     public ResponseEntity<ResponseFormat> updateCategory(@RequestBody Category category){
         Boolean status = categoryService.addCategory(category);
         return ResponseEntity.ok().body(new ResponseFormat(status));
     }
 
-    @Operation(summary = "Add new category")
+    @Operation(summary = "Add new category", tags = {"put", "admin"})
     @PutMapping("/categories")
     public ResponseEntity<ResponseFormat> addCategory(@RequestBody Category category){
         Boolean status = categoryService.addCategory(category);
         return ResponseEntity.ok().body(new ResponseFormat(status));
     }
 
-    @Operation(summary = "Delete a specific category")
+    @Operation(summary = "Delete a specific category", tags = {"delete", "admin"})
     @DeleteMapping("/categories")
     public ResponseEntity<ResponseFormat> deleteCategory(@RequestParam(name = "categoryID") Integer categoryID){
         Boolean status = categoryService.deleteCategory(categoryID);
@@ -113,13 +114,13 @@ public class AdminController {
     }
 
 
-    @Operation(summary = "Get all roles")
+    @Operation(summary = "Get all roles", tags = {"get", "admin"})
     @GetMapping("/roles")
     public ResponseEntity<List<Role>> getRoles(){
         return ResponseEntity.ok().body(roleService.getAllRoles());
     }
 
-    @Operation(summary = "Create a new user")
+    @Operation(summary = "Create a new user", tags = {"put", "admin"})
     @PutMapping("/user")
     public ResponseEntity<ResponseFormat> addUser(@RequestBody UserDetail userDetail){
         Boolean status = this.userService.addNewUser(userDetail);
@@ -127,42 +128,42 @@ public class AdminController {
     }
 
     // get posts by status
-    @Operation(summary = "Get all pending posts")
+    @Operation(summary = "Get all pending posts", tags = {"get", "admin"})
     @GetMapping("/posts/pending")
-    public ResponseEntity<List<PostInfo>> getPendingPosts(
+    public ResponseEntity<Page<PostInfo>> getPendingPosts(
         @RequestParam(name = "page", required = false) Integer pageNumber){
         pageNumber = pageNumber!=null?pageNumber:0;
-        List<PostInfo> posts = postService.getPostsByStatus(
+        Page<PostInfo> posts = postService.getPostsByStatus(
             PostStatus.Pending, pageNumber, WebConstant.PAGE_SIZE);    
         return ResponseEntity.ok().body(posts);
     }
-    @Operation(summary = "Get all successful posts")
+    @Operation(summary = "Get all successful posts", tags = {"get", "admin"})
     @GetMapping("/posts/successful")
-    public ResponseEntity<List<PostInfo>> getSuccessfulPosts(
+    public ResponseEntity<Page<PostInfo>> getSuccessfulPosts(
         @RequestParam(name = "page", required = false) Integer pageNumber){
         pageNumber = pageNumber!=null?pageNumber:0;
-        List<PostInfo> posts = postService.getPostsByStatus(
+        Page<PostInfo> posts = postService.getPostsByStatus(
             PostStatus.Successful, pageNumber, WebConstant.PAGE_SIZE);    
         return ResponseEntity.ok().body(posts);
     }
-    @Operation(summary = "Get all canceled posts")
+    @Operation(summary = "Get all canceled posts", tags = {"get", "admin"})
     @GetMapping("/posts/canceled")
-    public ResponseEntity<List<PostInfo>> getCanceledPosts(
+    public ResponseEntity<Page<PostInfo>> getCanceledPosts(
         @RequestParam(name = "page", required = false) Integer pageNumber){
         pageNumber = pageNumber!=null?pageNumber:0;
-        List<PostInfo> posts = postService.getPostsByStatus(
+        Page<PostInfo> posts = postService.getPostsByStatus(
             PostStatus.Canceled, pageNumber, WebConstant.PAGE_SIZE);    
         return ResponseEntity.ok().body(posts);
     }
     // validate post
-    @Operation(summary = "Confirm user's pending post")
+    @Operation(summary = "Confirm user's pending post", tags = {"post", "admin"})
     @PostMapping("/posts/confirm")
     public ResponseEntity<ResponseFormat> confirmPost(@RequestBody PostInfo postInfo) throws NameNotFoundException{
         Boolean status = postService.confirmPost(postInfo);
         return ResponseEntity.ok().body(new ResponseFormat(status));
     }
 
-    @Operation(summary = "Cancel user's pending post")
+    @Operation(summary = "Cancel user's pending post", tags = {"post", "admin"})
     @PostMapping("/posts/cancel")
     public ResponseEntity<ResponseFormat> cancelPost(@RequestBody PostInfo postInfo) throws NameNotFoundException{
         Boolean status = postService.cancelPost(postInfo);

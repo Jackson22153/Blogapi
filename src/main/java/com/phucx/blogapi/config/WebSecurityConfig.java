@@ -48,7 +48,6 @@ public class WebSecurityConfig {
             
         }));
         // login
-        // http.formLogin(Customizer.withDefaults());
         http.formLogin(login -> login.loginPage("/login"));
         http.httpBasic(Customizer.withDefaults());
         http.logout(logout -> logout.invalidateHttpSession(true));

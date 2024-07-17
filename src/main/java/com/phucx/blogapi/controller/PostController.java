@@ -6,6 +6,7 @@ import java.util.List;
 import javax.naming.NameNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,70 +39,70 @@ public class PostController {
     @Autowired
     private UploadFileService uploadFileService;
     
-    @Operation(summary = "Get posts for all users")
+    @Operation(summary = "Get posts for all users", tags = {"get", "public"})
     @GetMapping
-    public ResponseEntity<List<PostInfo>> getPosts(
+    public ResponseEntity<Page<PostInfo>> getPosts(
         @RequestParam(name = "page", required = false) Integer pagenumber
     ){
         pagenumber = pagenumber!=null?pagenumber:0;
-        List<PostInfo> posts = postService.getPostsByStatus(
+        Page<PostInfo> posts = postService.getPostsByStatus(
             PostStatus.Successful, pagenumber, WebConstant.PAGE_SIZE);
         return ResponseEntity.ok().body(posts);
     }
 
-    @Operation(summary = "Search posts for all users")
+    @Operation(summary = "Search posts for all users", tags = {"get", "public"})
     @GetMapping("/search")
-    public ResponseEntity<List<PostInfo>> searchPosts(
+    public ResponseEntity<Page<PostInfo>> searchPosts(
         @RequestParam(name = "l") String letter,
         @RequestParam(name = "page", required = false) Integer pagenumber
     ){
         pagenumber = pagenumber!=null?pagenumber:0;
-        List<PostInfo> posts = postService.searchPostsByStatus(
+        Page<PostInfo> posts = postService.searchPostsByStatus(
             letter, PostStatus.Successful, pagenumber, WebConstant.PAGE_SIZE);
         return ResponseEntity.ok().body(posts);
     }
 
-    @Operation(summary = "Get posts based on category for all users")
+    @Operation(summary = "Get posts based on category for all users", tags = {"get", "public"})
     @GetMapping("/search/{categoryName}")
-    public ResponseEntity<List<PostInfo>> searchPostsByCategory(
+    public ResponseEntity<Page<PostInfo>> searchPostsByCategory(
         @RequestParam(name = "l") String letter,
         @PathVariable String categoryName,
         @RequestParam(name = "page", required = false) Integer pagenumber
     ){
         pagenumber = pagenumber!=null?pagenumber:0;
-        List<PostInfo> posts = postService.searchPostsByCategoryAndStatus(
+        Page<PostInfo> posts = postService.searchPostsByCategoryAndStatus(
             letter, categoryName, PostStatus.Successful,
             pagenumber, WebConstant.PAGE_SIZE);
         return ResponseEntity.ok().body(posts);
     }
 
-    @Operation(summary = "Get posts based on category for all users")
+    @Operation(summary = "Get posts based on category for all users", tags = {"get", "public"})
     @GetMapping("/category/{categoryName}")
-    public ResponseEntity<List<PostInfo>> getPostsByCategory(
+    public ResponseEntity<Page<PostInfo>> getPostsByCategory(
         @PathVariable(name = "categoryName") String category,
         @RequestParam(name = "page", required = false) Integer pagenumber
     ){
         pagenumber = pagenumber!=null?pagenumber:0;
-        List<PostInfo> posts = postService.getPostsByCategoryAndStatus(
+        Page<PostInfo> posts = postService.getPostsByCategoryAndStatus(
             category, PostStatus.Successful, pagenumber, WebConstant.PAGE_SIZE);
         return ResponseEntity.ok().body(posts);
     }
 
-    @Operation(summary = "Get post detail for all users")
+    @Operation(summary = "Get post detail for all users", tags = {"get", "public"})
     @GetMapping("/detail/{postID}")
     public ResponseEntity<PostInfo> getPostDetail(@PathVariable Integer postID) throws NameNotFoundException{
         PostInfo post = postService.getPostByStatus(postID, PostStatus.Successful);
         return ResponseEntity.ok().body(post);
     }
 
-    @Operation(summary = "Get categories for all users")
+    @Operation(summary = "Get categories for all users", tags = {"get", "public"})
     @GetMapping("/categories")
     public ResponseEntity<List<Category>> getCategories(){
         List<Category> categories = categoryService.getAllCategories();
         return ResponseEntity.ok().body(categories);
     }
 
-    @Operation(summary = "Get specific image for all users")
+    @Operation(summary = "Get specific image for all users", tags = {"get", "public"})
     @GetMapping("/image/{imageFilename}")
     public ResponseEntity<byte[]> getImage(@PathVariable String imageFilename) throws IOException{
         byte[] imageBytes = uploadFileService.getImage(imageFilename);
@@ -109,7 +110,7 @@ public class PostController {
         return ResponseEntity.ok().contentType(MediaType.parseMediaType(mimeType)).body(imageBytes);
     }
 
-    @Operation(summary = "Upload an image for all users")
+    @Operation(summary = "Upload an image for all users", tags = {"post", "public"})
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<FileFormat> uploadImage(@RequestBody MultipartFile file){
         return ResponseEntity.ok().body(uploadFileService.uploadImage(file));

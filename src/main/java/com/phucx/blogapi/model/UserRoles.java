@@ -7,21 +7,21 @@ import lombok.Data;
 import lombok.ToString;
 
 @Data @ToString
-public class UserRoleInfoDTO {
+public class UserRoles {
     private Integer id;
     private String username;
     private List<String> roles;
-    public UserRoleInfoDTO(Integer id, String username, List<String> roles) {
+    public UserRoles(Integer id, String username, List<String> roles) {
         this.id = id;
         this.username = username;
         this.roles = roles;
     }
-    public UserRoleInfoDTO(Integer id, String username) {
+    public UserRoles(Integer id, String username) {
         this();
         this.id = id;
         this.username = username;
     }
-    public UserRoleInfoDTO() {
+    public UserRoles() {
         this.roles = new ArrayList<>();
     }
 }

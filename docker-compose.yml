@@ -6,16 +6,20 @@ services:
     container_name: mysql
     ports:
       - 3305:3306
+    volumes:
+      - D:\docker-storage\blogapi\mysql:/var/lib/mysql
     environment:
       - MYSQL_ROOT_PASSWORD=10122003simp!simp
     networks:
       - phucx
   
   blogapi:
-    image: jackson22153/blogapi:1.0.0
+    image: jackson22153/blogapi:2.0.0
     container_name: blogapi
     ports:
       - 8081:8081
+    volumes:
+      - D:\docker-storage\blogapi\images:/usr/src/app/
     depends_on:
       - mysql
     environment:

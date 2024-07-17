@@ -45,10 +45,10 @@ public class PostServiceImp implements PostService {
     private BookmarkPostInfoRepository bookmarkPostInfoRepository;
 
     @Override
-    public List<PostInfo> getAllPosts(int pageNumber, int pageSize) {
+    public Page<PostInfo> getAllPosts(int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Page<PostInfo> posts = postInfoRepository.findAll(pageable);
-        return posts.getContent();
+        return posts;
     }
 
     @Override
@@ -57,10 +57,10 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
-    public List<PostInfo> getPostsByUser(String user, int pageNumber, int pageSize) {
+    public Page<PostInfo> getPostsByUser(String user, int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Page<PostInfo> posts = postInfoRepository.findByUser(user, pageable);
-        return posts.getContent();
+        return posts;
     }
     @Override
     public PostInfo getPostByUser(String user, int postID) {
@@ -75,24 +75,24 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
-    public List<PostInfo> searchPostsByStatus(String postTitle, PostStatus status, int pageNumber, int pageSize) {
+    public Page<PostInfo> searchPostsByStatus(String postTitle, PostStatus status, int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Page<PostInfo> posts = postInfoRepository.findByTitleLikeAndStatus("%"+postTitle+"%", status, pageable);
-        return posts.getContent();
+        return posts;
     }
 
     @Override
-    public List<PostInfo> searchPostsOfUser(String postTitle, String user, int pageNumber, int pageSize) {
+    public Page<PostInfo> searchPostsOfUser(String postTitle, String user, int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Page<PostInfo> posts = postInfoRepository.findByTitleLikeAndUser("%"+postTitle+"%", user, pageable);
-        return posts.getContent();
+        return posts;
     }
 
     @Override
-    public List<PostInfo> searchAllPosts(String postTitle, int pageNumber, int pageSize) {
+    public Page<PostInfo> searchAllPosts(String postTitle, int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Page<PostInfo> posts = postInfoRepository.findByTitleLike("%"+postTitle+"%", pageable);
-        return posts.getContent();
+        return posts;
     }
 
     @Override
@@ -112,21 +112,21 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
-    public List<PostInfo> getPostsByCategory(String category, int pageNumber, int pageSize) {
+    public Page<PostInfo> getPostsByCategory(String category, int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Category fetchedCategory = categoryService.getCategory(category);
         Page<PostInfo> posts = postInfoRepository.findByCategoryOrderByIdDesc(fetchedCategory.getId(), pageable);
-        return posts.getContent();
+        return posts;
     } 
 
 
     @Override
-    public List<PostInfo> searchPostsByCategoryAndStatus(
+    public Page<PostInfo> searchPostsByCategoryAndStatus(
         String postTitle, String category, PostStatus status, int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Page<PostInfo> posts = postInfoRepository.findByTitleLikeAndCategoryAndStatusOrderByPostIdDesc(
             "%" + postTitle + "%", category, status, pageable);
-        return posts.getContent();
+        return posts;
     }
 
     @Override
@@ -166,17 +166,17 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
-    public List<PostInfo> getPostsOfUserByCategory(String username, String category, int pageNumber, int pageSize) {
+    public Page<PostInfo> getPostsOfUserByCategory(String username, String category, int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Page<PostInfo> posts = postInfoRepository.findByUserAndCategory(username, category, pageable);
-        return posts.getContent();
+        return posts;
     }
 
     @Override
-    public List<PostInfo> getPostsByStatus(PostStatus status, int pageNumber, int pageSize) {
+    public Page<PostInfo> getPostsByStatus(PostStatus status, int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Page<PostInfo> posts = postInfoRepository.findByStatus(status, pageable);
-        return posts.getContent();
+        return posts;
     }
 
 
@@ -212,13 +212,13 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
-    public List<PostInfo> getPostsByCategoryAndStatus(String category, PostStatus status, int pageNumber,
+    public Page<PostInfo> getPostsByCategoryAndStatus(String category, PostStatus status, int pageNumber,
             int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Category fetchedCategory = categoryService.getCategory(category);
         Page<PostInfo> posts = postInfoRepository.findByCategoryAndStatusOrderByIdDesc(
             fetchedCategory.getId(), status, pageable);
-        return posts.getContent();
+        return posts;
     }
 
     @Override
@@ -252,10 +252,10 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
-    public List<BookmarkPostInfo> getPostsInBookmarks(String username, int pageNumber, int pageSize) {
+    public Page<BookmarkPostInfo> getPostsInBookmarks(String username, int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Page<BookmarkPostInfo> posts = bookmarkPostInfoRepository.findByUser(username, pageable);
-        return posts.getContent();
+        return posts;
     }
 
     @Override

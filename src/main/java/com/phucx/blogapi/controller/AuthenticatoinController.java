@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.phucx.blogapi.model.ResponseFormat;
 import com.phucx.blogapi.model.UserDetail;
-import com.phucx.blogapi.model.UserRoleInfoDTO;
+import com.phucx.blogapi.model.UserRoles;
 import com.phucx.blogapi.service.user.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,7 +22,8 @@ public class AuthenticatoinController {
 
     @Operation(
         summary = "Register a user",
-        description = "Create a new user")
+        description = "Create a new user",
+        tags = {"post", "public"})
     @PostMapping("/register")
     public ResponseEntity<ResponseFormat> register(@RequestBody UserDetail userDetail){
         Boolean status = userService.registerUser(userDetail);
@@ -31,11 +32,12 @@ public class AuthenticatoinController {
 
     @Operation(
         summary = "Log in to the server",
-        description = "Use Basic Authorization which set username and password on the request header for server to authenticate")
+        description = "Use Basic Authorization which set username and password on the request header for server to authenticate",
+        tags = {"get", "public"})
     @GetMapping("/login")
-    public ResponseEntity<UserRoleInfoDTO> login(Authentication authentication){
+    public ResponseEntity<UserRoles> login(Authentication authentication){
         String username = authentication.getName();
-        UserRoleInfoDTO user = userService.getUserRoles(username);
+        UserRoles user = userService.getUserRoles(username);
         return ResponseEntity.ok().body(user);
     }
 
